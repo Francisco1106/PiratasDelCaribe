@@ -1,0 +1,6 @@
+
+test "Piratas" {
+
+	assert.that(true)
+
+}

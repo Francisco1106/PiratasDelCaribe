@@ -1,0 +1,100 @@
+import Piratas.*
+import Barco.*
+import bando.*
+describe "Pirata" {
+const fran = new Guerrero(energia = 50, poderDePelea = 5, vitalida = 3)
+const maki = new Navegador(energia = 8,inteligencia = 6)
+const santy = new Cocinero(energia = 3, moral = 3, ingredientesQuePosee= ["batata","trigo"])
+
+	test "Mandato de un gerrero" {
+		assert.equals(15,fran.poderDeMandato())
+	}
+	test "Mandato de una navegadora" {
+		assert.equals(36,maki.poderDeMandato())
+	}
+	test "Mandato de una cocinero" {
+		assert.equals(6,santy.poderDeMandato())
+	}
+	test "Mandato de Jack Sparrow"{
+		assert.equals(30000000,jackSparrow.poderDeMandato())
+	}
+	test "Efectos de otro pirata al tomar algo con Jack Sparrow"{
+		jackSparrow.tomarRon(fran)
+		assert.equals(40,fran.energia())
+	}
+	test "Efectos de Jack Sparrow  al tomar algo"{
+		jackSparrow.tomarRon(fran)
+		assert.equals(600,jackSparrow.energia())
+	}
+	test "Efectos de Jack Sparrow al tomar algo con un cocinero"{
+		jackSparrow.tomarRon(santy)
+		assert.equals(2,jackSparrow.ingredientesQuePosee().size())
+	}
+}
+describe "Barco" {
+	const fran = new Guerrero(energia = 10, poderDePelea = 10, vitalida = 100)
+	const maki = new Navegador(energia = 8, inteligencia = 6)
+	const santy = new Cocinero(energia = 3, moral = 3, ingredientesQuePosee= ["batata","trigo"])
+	const rompeOlas = new Barco(resistencia = 500, poderDeFuego = 400, municiones = 5, tripulacion=[fran,maki,santy])
+	const libertad  = new Barco(resistencia = 500, poderDeFuego= 350, municiones = 3, tripulacion= [jackSparrow])
+	
+	test "Mandato de un gerrero" {
+		assert.that(fran == rompeOlas.capitan())
+	}
+	test "Daños a un barco que perdio"{
+		libertad.enfrentamiento(rompeOlas)
+		assert.that(rompeOlas.resistencia()== 0 && rompeOlas.poderDeFuego() == 0 && rompeOlas.municiones() == 0)
+	}
+	test "Tripulacon herida por una enbarcacion"{
+		libertad.enfrentamiento(rompeOlas)
+		assert.equals(3,maki.inteligencia())
+		}
+	test "Piratas que hullen de un barco"{
+		libertad.enfrentamiento(rompeOlas)
+		assert.equals(0,rompeOlas.tripulacion().size())
+	}
+	test "Capturar tripulacion"{
+		libertad.enfrentamiento(rompeOlas)
+		assert.equals(2,libertad.tripulacion().size())
+	}
+	test "Gastar municion"{
+		libertad.ataqueACanionasos(2,rompeOlas)
+		assert.equals(1,libertad.municiones())
+	}
+	test "Disminuir resistencia de barco dañado"{
+		libertad.ataqueACanionasos(2,rompeOlas)
+		assert.equals(400,rompeOlas.resistencia())
+	}
+	test "Sacar tripulacion debil"{
+		libertad.ataqueACanionasos(2,rompeOlas)
+		assert.equals(0,rompeOlas.tripulacion().size())
+	}
+}
+describe "Union a Flota" {
+	const rompeOlas = new Barco(resistencia = 500, poderDeFuego = 400, municiones = 100, tripulacion=[fran,maki,santy])
+	test "beneficios de barco al unirse a la armada inglesa"{
+		armadaInglesa.unirBarco(rompeOlas)
+		assert.equals(130,rompeOlas.municiones())
+	}
+	test "beneficios de barco al unirse a la unión pirata:"{
+		unionPirata.unirBarco(rompeOlas)
+		assert.equals(460,rompeOlas.poderDeFuego())
+	}
+	test "beneficios de barco al unirse a la armada del holandés errante"{
+		armadaDelHolandesErrante.unirBarco(rompeOlas)
+		assert.equals(6,rompeOlas.tripulacion().size())
+	}
+	test "Abandonar Flota"{
+		armadaInglesa.unirBarco(rompeOlas)
+		armadaInglesa.abandonarFlota(rompeOlas)
+		assert.equals(0,armadaInglesa.flota().size())
+	}
+}
+describe "Poder de mandato de un humanoide" {
+	const bu = new MonstruosHumanoides(energia  =500, poderDePelea = 50) 
+	test "beneficios de barco al unirse a la armada inglesa"{
+		
+		assert.equals(50,bu.poderDeMandato())
+	}
+
+}
